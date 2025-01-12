@@ -12,9 +12,9 @@ def preprocess_and_compare(unibench_file, mteb_raw_file, output_unique_mteb, out
     print(f"Unique MTEB datasets saved to {output_unique_mteb}")
     
     with open(unibench_file, "r") as file:
-        unibench_datasets = set(line.strip() for line in file if line.strip())
+        unibench_datasets = set(line.strip().lower() for line in file if line.strip())
     
-    unique_to_unibench = sorted(unibench_datasets - set(unique_mteb_datasets))
+    unique_to_unibench = sorted(unibench_datasets - set(dataset.lower() for dataset in unique_mteb_datasets))
     
     with open(output_diff_file, "w") as file:
         file.write("Datasets in UniBench but not in MTEB:\n")
