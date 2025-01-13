@@ -9,7 +9,6 @@ def find_difference_and_save(unibench_file, mteb_file, output_diff_file):
     # Find datasets in UniBench but not in MTEB
     unique_to_unibench = sorted(unibench_datasets - mteb_datasets)
     
-    # Save the differences to a new file
     with open(output_diff_file, "w") as file:
         file.write("Datasets in UniBench but not in MTEB:\n")
         for dataset in unique_to_unibench:
@@ -23,5 +22,5 @@ unibench_file = path + "UniBenchDatasets.txt"
 mteb_file = "/Users/yash/Documents/Stanford/mteb/mteb/tasks/Image/parsed_datasets_of_MIEB.txt"
 output_diff_file = path + "UniBench_not_in_MTEB.txt"
 
-# Run the function
+
 find_difference_and_save(unibench_file, mteb_file, output_diff_file)
