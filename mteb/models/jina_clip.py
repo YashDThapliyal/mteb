@@ -155,15 +155,26 @@ jina_clip_v1 = ModelMeta(
     ),
     name="jinaai/jina-clip-v1",
     languages=["eng_Latn"],
-    open_source=True,
     revision="06150c7c382d7a4faedc7d5a0d8cdb59308968f4",
     release_date="2024-05-30",
     modalities=["image", "text"],
+    n_parameters=223_000_000,
+    max_tokens=8192,
+    embed_dim=768,
+    license="apache-2.0",
+    open_weights=True,
+    public_training_code=None,
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/jinaai/jina-clip-v1",
+    similarity_fn_name=None,
+    use_instructions=True,
+    training_datasets={
+        # LAION400M
+        # ShareGPT4V
+        "MSMARCO": ["train"],
+        # NQ
+        # HotpotQA
+        # Natural Language Inference (NLI) dataset (Bowman et al., 2015)
+    },
 )
-
-
-if __name__ == "__main__":
-    import mteb
-
-    mdl = mteb.get_model(jina_clip_v1.name, jina_clip_v1.revision)
-    emb = mdl.get_text_embeddings(["Hello, world!"])

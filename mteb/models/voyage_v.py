@@ -11,7 +11,6 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
 
-import mteb
 from mteb.encoder_interface import PromptType
 from mteb.model_meta import ModelMeta
 
@@ -245,19 +244,19 @@ voyage_v = ModelMeta(
     loader=partial(voyage_v_loader, model_name="voyage-multimodal-3"),
     name="voyage-multimodal-3",
     languages=[],  # Unknown
-    open_source=False,
     revision="1",
     release_date="2024-11-10",
     n_parameters=None,
-    memory_usage=None,
     max_tokens=None,
     embed_dim=1024,
     license=None,
     similarity_fn_name="cosine",
     framework=[],
     modalities=["image", "text"],
+    open_weights=None,
+    public_training_code=None,
+    public_training_data=None,
+    reference=None,
+    use_instructions=None,
+    training_datasets=None,
 )
-
-if __name__ == "__main__":
-    mdl = mteb.get_model(voyage_v.name, voyage_v.revision)
-    emb = mdl.encode(["Hello, world!"])

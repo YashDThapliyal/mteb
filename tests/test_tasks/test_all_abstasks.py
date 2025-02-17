@@ -13,6 +13,7 @@ from mteb.abstasks import AbsTask
 from mteb.abstasks.AbsTaskInstructionRetrieval import AbsTaskInstructionRetrieval
 from mteb.abstasks.AbsTaskRetrieval import AbsTaskRetrieval
 from mteb.abstasks.AbsTaskSpeedTask import AbsTaskSpeedTask
+from mteb.abstasks.aggregated_task import AbsTaskAggregate
 from mteb.abstasks.Image.AbsTaskAny2AnyMultiChoice import AbsTaskAny2AnyMultiChoice
 from mteb.abstasks.Image.AbsTaskAny2AnyRetrieval import AbsTaskAny2AnyRetrieval
 from mteb.abstasks.MultiSubsetLoader import MultiSubsetLoader
@@ -93,14 +94,23 @@ async def check_datasets_are_available_on_hf(tasks):
 def test_dataset_availability():
     """Checks if the datasets are available on Hugging Face using both their name and revision."""
     tasks = MTEB().tasks_cls
-    tasks = [t for t in tasks if t.metadata.name not in ALL_MOCK_TASKS]
+    # do not check aggregated tasks as they don't have a dataset
+    tasks = [t for t in tasks if not isinstance(t, AbsTaskAggregate)]
+    tasks = [
+        t
+        for t in tasks
+        if t.metadata.name not in MOCK_TASK_TEST_GRID_AS_STRING
+        if t.metadata.name not in MOCK_MIEB_TASK_GRID_AS_STRING
+        and t.metadata.name
+        != "AfriSentiLangClassification"  # HOTFIX: Issue#1777. Remove this line when issue is resolved.
+    ]
     asyncio.run(check_datasets_are_available_on_hf(tasks))
 
 
-def test_superseeded_dataset_exists():
-    tasks = mteb.get_tasks(exclude_superseeded=False)
+def test_superseded_dataset_exists():
+    tasks = mteb.get_tasks(exclude_superseded=False)
     for task in tasks:
         if task.superseded_by:
             assert (
                 task.superseded_by in TASKS_REGISTRY
-            ), f"{task} is superseeded by {task.superseded_by} but {task.superseded_by} is not in the TASKS_REGISTRY"
+            ), f"{task} is superseded by {task.superseded_by} but {task.superseded_by} is not in the TASKS_REGISTRY"

@@ -20,7 +20,7 @@ def blip2_loader(**kwargs):
         )
     except ImportError:
         raise ImportError(
-            "Please install `pip install salesforce-lavis` to use BLIP-2 models."
+            "Please install `pip install mteb[blip2]` to use BLIP-2 models."
         )
 
     class BLIP2ModelWrapper:
@@ -215,6 +215,12 @@ def blip2_loader(**kwargs):
     return BLIP2ModelWrapper(**kwargs)
 
 
+blip2_training_datasets = {
+    # COCO
+    # CC3M+CC12M+SBU
+    # LAION400M
+}
+
 blip2_opt_2_7b = ModelMeta(
     loader=partial(
         blip2_loader,
@@ -222,10 +228,21 @@ blip2_opt_2_7b = ModelMeta(
     ),
     name="Salesforce/blip2-opt-2.7b",
     languages=["eng_Latn"],
-    open_source=True,
     revision="51572668da0eb669e01a189dc22abe6088589a24",
     release_date="2024-03-22",
     modalities=["image", "text"],
+    n_parameters=3_740_000_000,
+    max_tokens=None,
+    embed_dim=768,
+    license="mit",
+    open_weights=True,
+    public_training_code="https://github.com/salesforce/LAVIS/tree/main/projects/blip2",
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/Salesforce/blip2-opt-2.7b",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=blip2_training_datasets,
 )
 
 blip2_opt_6_7b_coco = ModelMeta(
@@ -235,48 +252,19 @@ blip2_opt_6_7b_coco = ModelMeta(
     ),
     name="Salesforce/blip2-opt-6.7b-coco",
     languages=["eng_Latn"],
-    open_source=True,
     revision="0d580de59320a25a4d2c386387bcef310d5f286e",
     release_date="2024-03-31",
     modalities=["image", "text"],
+    n_parameters=7_750_000_000,
+    max_tokens=None,
+    embed_dim=768,
+    license="mit",
+    open_weights=True,
+    public_training_code="https://github.com/salesforce/LAVIS/tree/main/projects/blip2",
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/Salesforce/blip2-opt-6.7b-coco",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=blip2_training_datasets,
 )
-
-
-if __name__ == "__main__":
-    import mteb
-
-    mdl = mteb.get_model(blip2_opt_2_7b.name, blip2_opt_2_7b.revision, device="cpu")
-    emb = mdl.get_text_embeddings(["Hello, world!"])
-    emb2 = mdl.get_text_embeddings(["Hello there, world!"])
-    emb3 = mdl.get_text_embeddings(["Goodbye, person!"])
-
-    sim = torch.nn.functional.cosine_similarity(emb, emb2)
-    print(sim)
-
-    sim = torch.nn.functional.cosine_similarity(emb, emb3)
-    print(sim)
-
-    cat_img = Image.open("cat.jpg")
-    cat_text = "An image of a cat"
-
-    multi_cat_emb = mdl.get_fused_embeddings(
-        ["A photo of an animal"], [cat_img], fusion_mode="multimodal"
-    )
-    multi_conflicting_emb = mdl.get_fused_embeddings(
-        ["A photo of a dog"], [cat_img], fusion_mode="multimodal"
-    )
-    image_cat_emb = mdl.get_image_embeddings([cat_img])
-    text_cat_emb = mdl.get_text_embeddings(["An photo of a cat"])
-    text_dog_emb = mdl.get_text_embeddings(["An image of a dog"])
-
-    print(multi_cat_emb.shape)
-
-    sim1 = torch.nn.functional.cosine_similarity(image_cat_emb, text_cat_emb)
-    sim2 = torch.nn.functional.cosine_similarity(image_cat_emb, text_dog_emb)
-    sim3 = torch.nn.functional.cosine_similarity(multi_cat_emb, text_cat_emb)
-    sim4 = torch.nn.functional.cosine_similarity(multi_cat_emb, text_dog_emb)
-    sim5 = torch.nn.functional.cosine_similarity(multi_conflicting_emb, text_cat_emb)
-
-    print(sim1, sim2)
-
-    print(sim3, sim4, sim5)

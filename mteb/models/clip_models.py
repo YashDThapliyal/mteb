@@ -144,10 +144,21 @@ clip_vit_large_patch14 = ModelMeta(
     ),
     name="openai/clip-vit-large-patch14",
     languages=["eng_Latn"],
-    open_source=True,
     revision="32bd64288804d66eefd0ccbe215aa642df71cc41",
     release_date="2021-02-26",
     modalities=["image", "text"],
+    n_parameters=428_000_000,
+    max_tokens=77,
+    embed_dim=768,
+    license=None,
+    open_weights=True,
+    public_training_code=None,
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/openai/clip-vit-large-patch14",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=None,
 )
 
 clip_vit_base_patch32 = ModelMeta(
@@ -157,10 +168,21 @@ clip_vit_base_patch32 = ModelMeta(
     ),
     name="openai/clip-vit-base-patch32",
     languages=["eng_Latn"],
-    open_source=True,
     revision="3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
     release_date="2021-02-26",
     modalities=["image", "text"],
+    n_parameters=151_000_000,
+    max_tokens=77,
+    embed_dim=512,
+    license=None,
+    open_weights=True,
+    public_training_code=None,
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/openai/clip-vit-base-patch32",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=None,
 )
 
 clip_vit_base_patch16 = ModelMeta(
@@ -170,14 +192,19 @@ clip_vit_base_patch16 = ModelMeta(
     ),
     name="openai/clip-vit-base-patch16",
     languages=["eng_Latn"],
-    open_source=True,
     revision="57c216476eefef5ab752ec549e440a49ae4ae5f3",
     release_date="2021-02-26",
     modalities=["image", "text"],
+    n_parameters=151_000_000,
+    max_tokens=77,
+    embed_dim=512,
+    license=None,
+    open_weights=True,
+    public_training_code=None,
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/openai/clip-vit-base-patch16",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=None,
 )
-
-if __name__ == "__main__":
-    import mteb
-
-    mdl = mteb.get_model(clip_vit_base_patch16.name, clip_vit_base_patch16.revision)
-    emb = mdl.get_text_embeddings(["Hello, world!"])

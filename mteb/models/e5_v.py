@@ -195,14 +195,21 @@ e5_v = ModelMeta(
     ),
     name="royokong/e5-v",
     languages=["eng_Latn"],
-    open_source=True,
     revision="0c1f22679417b3ae925d779442221c40cd1861ab",
     release_date="2024-07-17",
     modalities=["image", "text"],
+    n_parameters=8_360_000_000,
+    max_tokens=8192,
+    embed_dim=4096,
+    license=None,
+    open_weights=True,
+    public_training_code="https://github.com/kongds/E5-V",
+    public_training_data="https://huggingface.co/datasets/princeton-nlp/datasets-for-simcse",
+    framework=["PyTorch"],
+    reference="https://huggingface.co/royokong/e5-v",
+    similarity_fn_name=None,
+    use_instructions=True,
+    training_datasets={
+        # princeton-nlp/datasets-for-simcse
+    },
 )
-
-if __name__ == "__main__":
-    import mteb
-
-    mdl = mteb.get_model(e5_v.name, e5_v.revision)
-    emb = mdl.get_text_embeddings(["Hello, world!"])

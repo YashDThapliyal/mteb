@@ -46,17 +46,15 @@ from sentence_transformers import SentenceTransformer
 
 # Define the sentence-transformers model name
 model_name = "average_word_embeddings_komninos"
-# or directly from huggingface:
-# model_name = "sentence-transformers/all-MiniLM-L6-v2"
 
-model = SentenceTransformer(model_name)
+model = mteb.get_model(model_name) # if the model is not implemented in MTEB it will be eq. to SentenceTransformer(model_name)
 tasks = mteb.get_tasks(tasks=["Banking77Classification"])
 evaluation = mteb.MTEB(tasks=tasks)
 results = evaluation.run(model, output_folder=f"results/{model_name}")
 ```
 
 <details>
-  <summary> Running SentneceTransformermer model with prompts </summary>
+  <summary> Running SentenceTransformer model with prompts </summary>
 
 Prompts can be passed to the SentenceTransformer model using the `prompts` parameter. The following code shows how to use prompts with SentenceTransformer:
 
@@ -164,7 +162,7 @@ For instance to select the 56 English datasets that form the "Overall MTEB Engli
 
 ```python
 import mteb
-benchmark = mteb.get_benchmark("MTEB(eng)")
+benchmark = mteb.get_benchmark("MTEB(eng, classic)")
 evaluation = mteb.MTEB(tasks=benchmark)
 ```
 
@@ -211,6 +209,21 @@ Note that the public leaderboard uses the test splits for all datasets except MS
 
 </details>
 
+
+<details>
+  <summary> Selecting evaluation subset </summary>
+
+### Selecting evaluation subset
+You can evaluate only on selected subsets. For example, if you want to evaluate only the `subset_name_to_run` subset of all tasks, do the following:
+
+```python
+evaluation.run(model, eval_subsets=["subset_name_to_run"])
+```
+
+Monolingual tasks have `default` subset, other tasks have subsets that are specific to the dataset.
+
+</details>
+
 <details>
   <summary>  Using a custom model </summary>
 
@@ -220,7 +233,10 @@ Note that the public leaderboard uses the test splits for all datasets except MS
 Models should implement the following interface, implementing an `encode` function taking as inputs a list of sentences, and returning a list of embeddings (embeddings can be `np.array`, `torch.tensor`, etc.). For inspiration, you can look at the [mteb/mtebscripts repo](https://github.com/embeddings-benchmark/mtebscripts) used for running diverse models via SLURM scripts for the paper.
 
 ```python
+import mteb
 from mteb.encoder_interface import PromptType
+import numpy as np
+
 
 class CustomModel:
     def encode(
@@ -244,7 +260,7 @@ class CustomModel:
         pass
 
 model = CustomModel()
-tasks = mteb.get_task("Banking77Classification")
+tasks = mteb.get_tasks(tasks=["Banking77Classification"])
 evaluation = MTEB(tasks=tasks)
 evaluation.run(model)
 ```
@@ -316,6 +332,34 @@ evaluation.run(
 </details>
 
 <details>
+  <summary> Late Interaction (ColBERT) </summary>
+
+### Using Late Interaction models for retrieval
+
+```python
+from mteb import MTEB
+import mteb
+
+
+colbert = mteb.get_model("colbert-ir/colbertv2.0")
+tasks = mteb.get_tasks(tasks=["NFCorpus"], languages=["eng"])
+
+eval_splits = ["test"]
+
+evaluation = MTEB(tasks=tasks)
+
+evaluation.run(
+    colbert,
+    eval_splits=eval_splits,
+    corpus_chunk_size=500,
+)
+```
+This implementation employs the MaxSim operation to compute the similarity between sentences. While MaxSim provides high-quality results, it processes a larger number of embeddings, potentially leading to increased resource usage. To manage resource consumption, consider lowering the `corpus_chunk_size` parameter.
+
+
+</details>
+
+<details>
   <summary>  Saving retrieval task predictions </summary>
 
 ### Saving retrieval task predictions
@@ -380,6 +424,45 @@ df = results_to_dataframe(results)
 
 </details>
 
+
+<details>
+  <summary>  Annotate Contamination in the training data of a model  </summary>
+
+### Annotate Contamination
+
+have your found contamination in the training data of a model? Please let us know, either by opening an issue or ideally by submitting a PR
+annotatig the training datasets of the model:
+
+```py
+model_w_contamination = ModelMeta(
+    name = "model-with-contamination"
+    ...
+    training_datasets: {"ArguAna": # name of dataset within MTEB
+                        ["test"]} # the splits that have been trained on
+    ...
+)
+```
+
+
+</details>
+
+<details>
+  <summary>  Running the leaderboard locally </summary>
+
+
+### Running the Leaderboard
+
+It is possible to completely deploy the leaderboard locally or self-host it. This can e.g. be relevant for companies that might want to
+integrate build their own benchmarks or integrate custom tasks into existing benchmarks. 
+
+Running the leaderboard is quite easy. Simply run:
+```py
+python -m mteb.leaderboard.app
+
+The leaderboard requires gradio install, which can be installed using `pip install mteb[gradio]` and requires python >3.10.
+
+</details>
+
 <details>
   <summary>  Caching Embeddings To Re-Use Them </summary>
 
@@ -406,26 +489,28 @@ evaluation.run(model, ...)
 
 ## Documentation
 
-| Documentation                  |                        |
-| ------------------------------ | ---------------------- |
-| 📋 [Tasks] | Overview of available tasks |
-| 📐 [Benchmarks] | Overview of available benchmarks |
-| 📈 [Leaderboard] | The interactive leaderboard of the benchmark |
-| 🤖 [Adding a model] | Information related to how to submit a model to the leaderboard |
+| Documentation                  |                                                                                     |
+|--------------------------------|-------------------------------------------------------------------------------------|
+| 📋 [Tasks]                     | Overview of available tasks                                                         |
+| 📐 [Benchmarks]                | Overview of available benchmarks                                                    |
+| 📈 [Leaderboard]               | The interactive leaderboard of the benchmark                                        |
+| 🤖 [Adding a model]            | Information related to how to submit a model to MTEB and to the leaderboard |
 | 👩‍🔬 [Reproducible workflows] | Information related to how to reproduce and create reproducible workflows with MTEB |
-| 👩‍💻 [Adding a dataset] | How to add a new task/dataset to MTEB | 
-| 👩‍💻 [Adding a leaderboard tab] | How to add a new leaderboard tab to MTEB | 
-| 🤝 [Contributing] | How to contribute to MTEB and set it up for development |
-| 🌐 [MMTEB] | An open-source effort to extend MTEB to cover a broad set of languages |  
+| 👩‍💻 [Adding a dataset]       | How to add a new task/dataset to MTEB                                               |
+| 👩‍💻 [Adding a benchmark]     | How to add a new benchmark to MTEB and to the leaderboard                           |
+| 🤝 [Contributing]              | How to contribute to MTEB and set it up for development                             |
+| 🌐 [MMTEB]                     | An open-source effort to extend MTEB to cover a broad set of languages              |
+| 🖼️ [MIEB]                      | Extension of MTEB to image embeddings |
 
 [Tasks]: docs/tasks.md
 [Benchmarks]: docs/benchmarks.md
 [Contributing]: CONTRIBUTING.md
 [Adding a model]: docs/adding_a_model.md
 [Adding a dataset]: docs/adding_a_dataset.md
-[Adding a leaderboard tab]: docs/adding_a_leaderboard_tab.md
+[Adding a benchmark]: docs/adding_a_benchmark.md
 [Leaderboard]: https://huggingface.co/spaces/mteb/leaderboard
 [MMTEB]: docs/mmteb/readme.md
+[MIEB]: docs/mieb.md
 [Reproducible workflows]: docs/reproducible_workflow.md
 
 ## Citing
@@ -451,5 +536,6 @@ You may also want to read and cite the amazing work that has extended MTEB & int
 - Orion Weller, Benjamin Chang, Sean MacAvaney, Kyle Lo, Arman Cohan, Benjamin Van Durme, Dawn Lawrie, Luca Soldaini. "[FollowIR: Evaluating and Teaching Information Retrieval Models to Follow Instructions](https://arxiv.org/abs/2403.15246)" arXiv 2024
 - Dawei Zhu, Liang Wang, Nan Yang, Yifan Song, Wenhao Wu, Furu Wei, Sujian Li. "[LongEmbed: Extending Embedding Models for Long Context Retrieval](https://arxiv.org/abs/2404.12096)" arXiv 2024
 - Kenneth Enevoldsen, Márton Kardos, Niklas Muennighoff, Kristoffer Laigaard Nielbo. "[The Scandinavian Embedding Benchmarks: Comprehensive Assessment of Multilingual and Monolingual Text Embedding](https://arxiv.org/abs/2406.02396)" arXiv 2024
+- Ali Shiraee Kasmaee, Mohammad Khodadad, Mohammad Arshi Saloot, Nick Sherck, Stephen Dokas, Hamidreza Mahyar, Soheila Samiee. "[ChemTEB: Chemical Text Embedding Benchmark, an Overview of Embedding Models Performance & Efficiency on a Specific Domain](https://arxiv.org/abs/2412.00532)" arXiv 2024
 
 For works that have used MTEB for benchmarking, you can find them on the [leaderboard](https://huggingface.co/spaces/mteb/leaderboard).

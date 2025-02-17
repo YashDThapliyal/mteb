@@ -120,6 +120,12 @@ class DINOModelWrapper:
             return image_embeddings
 
 
+dinov2_training_datasets = {
+    # LVD-142M
+    #  ImageNet-22k
+}
+
+
 dinov2_small = ModelMeta(
     loader=partial(
         DINOModelWrapper,
@@ -127,10 +133,21 @@ dinov2_small = ModelMeta(
     ),
     name="facebook/dinov2-small",
     languages=["eng_Latn"],
-    open_source=True,
     revision="ed25f3a31f01632728cabb09d1542f84ab7b0056",
     release_date="2023-07-18",
     modalities=["image"],
+    n_parameters=22_100_000,
+    max_tokens=None,
+    embed_dim=384,
+    license="apache-2.0",
+    open_weights=True,
+    public_training_code="https://github.com/facebookresearch/dinov2",
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/facebook/dinov2-small",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=dinov2_training_datasets,
 )
 
 dinov2_base = ModelMeta(
@@ -140,10 +157,21 @@ dinov2_base = ModelMeta(
     ),
     name="facebook/dinov2-base",
     languages=["eng_Latn"],
-    open_source=True,
     revision="f9e44c814b77203eaa57a6bdbbd535f21ede1415",
     release_date="2023-07-18",
     modalities=["image"],
+    n_parameters=86_600_000,
+    max_tokens=None,
+    embed_dim=768,
+    license="apache-2.0",
+    open_weights=True,
+    public_training_code="https://github.com/facebookresearch/dinov2",
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/facebook/dinov2-base",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=dinov2_training_datasets,
 )
 
 dinov2_large = ModelMeta(
@@ -153,10 +181,21 @@ dinov2_large = ModelMeta(
     ),
     name="facebook/dinov2-large",
     languages=["eng_Latn"],
-    open_source=True,
     revision="47b73eefe95e8d44ec3623f8890bd894b6ea2d6c",
     release_date="2023-07-18",
     modalities=["image"],
+    n_parameters=304_000_000,
+    max_tokens=None,
+    embed_dim=1024,
+    license="apache-2.0",
+    open_weights=True,
+    public_training_code="https://github.com/facebookresearch/dinov2",
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/facebook/dinov2-large",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=dinov2_training_datasets,
 )
 
 dinov2_giant = ModelMeta(
@@ -166,13 +205,19 @@ dinov2_giant = ModelMeta(
     ),
     name="facebook/dinov2-giant",
     languages=["eng_Latn"],
-    open_source=True,
     revision="611a9d42f2335e0f921f1e313ad3c1b7178d206d",
     release_date="2023-07-18",
     modalities=["image"],
+    n_parameters=1_140_000_000,
+    max_tokens=None,
+    embed_dim=1536,
+    license="apache-2.0",
+    open_weights=True,
+    public_training_code="https://github.com/facebookresearch/dinov2",
+    public_training_data=None,
+    framework=["PyTorch"],
+    reference="https://huggingface.co/facebook/dinov2-giant",
+    similarity_fn_name=None,
+    use_instructions=False,
+    training_datasets=dinov2_training_datasets,
 )
-
-if __name__ == "__main__":
-    import mteb
-
-    mdl = mteb.get_model(dinov2_base.name, dinov2_base.revision)
