@@ -20,8 +20,8 @@ class CountBench(AbsTaskReranking):
         date=("2024-05-08", "2024-05-08"),
         domains=["Non-fiction"],  # not sure about this
         task_subtypes=["Object recognition"],  # Closest valid subtype
-        license="cc-by-4.0",  # not sure cuz liscense is not mentioned in the dataset
-        annotations_creators="derived",  # not sure about this
+        license="not specified",  # not sure cuz liscense is not mentioned in the dataset
+        annotations_creators="expert-annotated",  # not sure about this
         dialect=[],
         sample_creation="found",  # Fixed to a valid value
         bibtex_citation="""

@@ -21,7 +21,7 @@ class DiabeticRetinopathyDetection(AbsTaskClassification):
         date=("2024-04-12", "2024-04-12"), 
         domains=["Medical"],
         task_subtypes=["Tumor detection"],
-        #license="cc-by-4.0",  # not sure about liscense as its not mentioned in the dataset
+        license="not specified", 
         annotations_creators="expert-annotated",
         dialect=[],
         sample_creation="found",
