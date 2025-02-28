@@ -7,7 +7,7 @@ class CountBench(Any2TextMultipleChoice):
         name="WDS_CountBench",
         description="A benchmark dataset for evaluating models on counting tasks within images, featuring a variety of images paired with textual descriptions indicating the quantity of objects present.",
         reference="https://huggingface.co/datasets/haideraltahan/wds_countbench",
-        type="ImageClassification",  
+        type="Any2TextMutipleChoice",  
         category="i2t",  
         modalities=["text","image"],
         eval_splits=["test"],
