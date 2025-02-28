@@ -1,8 +1,11 @@
+import mteb
 from mteb import MTEB
-from mteb.tasks.Image import Any2TextMultipleChoice
+from mteb.abstasks.Image.AbsTaskAny2TextMultipleChoice import (
+    AbsTaskAny2TextMultipleChoice,
+)
 from mteb.abstasks.TaskMetadata import TaskMetadata
 
-class CountBench(Any2TextMultipleChoice):
+class CountBench(AbsTaskAny2TextMultipleChoice):
     metadata = TaskMetadata(
         name="WDS_CountBench",
         description="A benchmark dataset for evaluating models on counting tasks within images, featuring a variety of images paired with textual descriptions indicating the quantity of objects present.",
@@ -36,5 +39,7 @@ class CountBench(Any2TextMultipleChoice):
     )
 
         
+
+task = mteb.get_task("WDS_CountBench")
 
 print("CountBench task loaded successfully")
